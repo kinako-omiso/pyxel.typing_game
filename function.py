@@ -1,8 +1,6 @@
 import pyxel #type:ignore
 
 # update
-def update_reset_play_scene(self):
-    pass
 
 def update_menu_scene(self):
     if pyxel.btnp(pyxel.MOUSE_BUTTON_LEFT):
@@ -14,25 +12,47 @@ def update_menu_scene(self):
             
             # y座標でどの難易度をクリックしたか判定
             if pyxel.height//10 + 40 <= my <= pyxel.height//10 + 50:
-                self.game_mode = self.EASY
+                self.game_level = self.EASY
                 self.current_scene = self.START_SCENE
                 
             elif pyxel.height//10 + 60 <= my <= pyxel.height//10 + 70:
-                self.game_mode = self.NORMAL
+                self.game_level = self.NORMAL
                 self.current_scene = self.START_SCENE
                 
             elif pyxel.height//10 + 80 <= my <= pyxel.height//10 + 90:
-                self.game_mode = self.HARD
+                self.game_level = self.HARD
                 self.current_scene = self.START_SCENE
-
 def update_start_scene(self):
     if self.current_scene == self.START_SCENE:
         if pyxel.btnp(pyxel.KEY_SPACE):
-            update_reset_play_scene(self)
+            self.word_manager.generate_new_word(self.game_level)
+            self.score = 0
+            self.keyboard.keyword = ""
+            self.game_finish = False 
+            self.game_timer = self.GAME_DISPLAY_TIME
             self.current_scene = self.PLAY_SCENE
 
 def update_play_scene(self):
+    if self.game_finish:
+        if pyxel.btnp(pyxel.KEY_SPACE):
+            self.current_scene = self.MENU_SCENE
+        return # ここで処理を終わらせて下のタイピングを動かさない
+
+    # まだゲーム中ならタイマーを減らす
+    self.game_timer -= 1   
+    # タイマーが0になったら終了フラグを立てて、そのフレームの処理を終わる
+    if self.game_timer <= 0:
+        self.game_finish = True
+        return
+
     self.keyboard.update()
+    if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.KEY_KP_ENTER):
+        if self.keyboard.keyword == self.word_manager.keyword:
+            self.score += 1                                      # 1. スコアを加算
+            self.word_manager.generate_new_word(self.game_level) # 2. 次のお題を生成
+            self.keyboard.keyword = ""                           # 3. 入力した文字を空っぽに戻す
+        # 違っていたら何もしない（そのまま打たせ続ける）
+    
 
 # draw
 def draw_menu_scene(self):
@@ -44,14 +64,23 @@ def draw_menu_scene(self):
 
 def draw_start_scene(self):
     pyxel.cls(pyxel.COLOR_BLACK) 
-    mode_text = f"MODE: {self.game_mode.upper()}"
+    mode_text = f"MODE: {self.game_level.upper()}"
     pyxel.text(pyxel.width//10, pyxel.height//10, mode_text, pyxel.COLOR_YELLOW)
     
     pyxel.text(pyxel.width//10, pyxel.height//10 + 20, "SPACE TO START", pyxel.COLOR_WHITE)
 
 def draw_play_scene(self):
     pyxel.cls(pyxel.COLOR_BLACK)
-    pyxel.text(pyxel.width//10, pyxel.height//10, "PLAYING...", pyxel.COLOR_WHITE)
-    
-    input_text = f"INPUT: {self.keyboard.keyword}"
-    pyxel.text(pyxel.width//10, pyxel.height//2, input_text, pyxel.COLOR_YELLOW)
+    if self.game_finish:
+        # FINISH画面の描画
+        pyxel.text(pyxel.width//2 - 15, pyxel.height//2 - 10, "FINISH!", pyxel.COLOR_RED)
+        pyxel.text(pyxel.width//2 - 25, pyxel.height//2 + 10, f"SCORE: {self.score}", pyxel.COLOR_YELLOW)
+        pyxel.text(pyxel.width//2 - 40, pyxel.height//2 + 30, "PRESS SPACE TO MENU", pyxel.COLOR_WHITE)
+
+    else:
+        pyxel.text(5, 5, f"TIME: {self.game_timer // 30}", pyxel.COLOR_WHITE)
+        pyxel.text(pyxel.width//10, pyxel.height//10, "PLAYING...", pyxel.COLOR_WHITE)
+        pyxel.text(pyxel.width - 50, pyxel.height//10, f"SCORE: {self.score}", pyxel.COLOR_GREEN)
+        self.word_manager.draw()
+        input_text = f"INPUT: {self.keyboard.keyword}"
+        pyxel.text(pyxel.width//10, pyxel.height//2, input_text, pyxel.COLOR_YELLOW)
