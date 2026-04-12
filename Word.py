@@ -27,7 +27,7 @@ class Key_word:
                 if len(word) <= self.word_len_max:
                     return word
             elif game_level == "normal":
-                word = self.fake.text.lower()
+                word = self.fake.text(max_nb_chars=20).replace('\n', ' ').lower()
                 if len(word) <= self.word_len_max:
                     return word
             elif game_level == "hard":

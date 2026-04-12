@@ -14,6 +14,7 @@ HARD = "hard"
 class App:
     def __init__(self):
         pyxel.init(SCREEN_WIDTH, SCREEN_HEIGHT, title="typing_game")
+        pyxel.load("my_resource.pyxres")
         pyxel.mouse(True)
         self.START_SCENE= "START"
         self.PLAY_SCENE = "PLAY"
