@@ -52,6 +52,4 @@ class App:
         elif self.current_scene == self.PLAY_SCENE:
             function.draw_play_scene(self)
 
-#class keyword:
-
 App()
