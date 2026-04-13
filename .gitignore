@@ -1,2 +1,4 @@
 #仮想環境のフォルダ
 typing-game/*
+
+__pycache__/*
