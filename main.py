@@ -3,13 +3,13 @@ import Key
 import function
 import Word
 
-SCREEN_WIDTH = 256
-SCREEN_HEIGHT = 256
+SCREEN_WIDTH = 128
+SCREEN_HEIGHT = 128
 
 EASY = "easy"
 NORMAL = "normal"
 HARD = "hard"
-
+HELL = "hell"
 
 class App:
     def __init__(self):
@@ -19,11 +19,13 @@ class App:
         self.START_SCENE= "START"
         self.PLAY_SCENE = "PLAY"
         self.MENU_SCENE = "MENU"
+        self.HELL_SCENE = "HELL"
         self.current_scene = self.MENU_SCENE
         self.game_level = EASY
         self.EASY = EASY
         self.NORMAL = NORMAL
         self.HARD = HARD
+        self.HELL = HELL
         self.score = 0
         self.GAME_DISPLAY_TIME = 1800
         self.game_timer = self.GAME_DISPLAY_TIME

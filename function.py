@@ -22,7 +22,11 @@ def update_menu_scene(self):
             elif pyxel.height//10 + 80 <= my <= pyxel.height//10 + 90:
                 self.game_level = self.HARD
                 self.current_scene = self.START_SCENE
-        
+
+        if pyxel.width//10 <= pyxel.mouse_x <= pyxel.width//2 and pyxel.height//10  <= pyxel.mouse_y <= pyxel.height//10 + 5:
+                self.game_level = self.HELL
+                self.current_scene = self.START_SCENE
+
         if 4 <= pyxel.mouse_x <= 13 and 13 <= pyxel.mouse_y <= 21:
                 self.current_scene = self.MENU_SCENE
             # ESCAPEボタンのクリック判定（elifをここに入れる）
@@ -36,7 +40,7 @@ def update_start_scene(self):
         # クリック判定をひとまとめにする
         if pyxel.btnp(pyxel.MOUSE_BUTTON_LEFT):
             # MENUボタンのクリック判定
-            if 4 <= pyxel.mouse_x <= 13 and 13 <= pyxel.mouse_y <= 21:
+            if 4 <= pyxel.mouse_x <= 13 and 4 <= pyxel.mouse_y <= 13: 
                 self.current_scene = self.MENU_SCENE
             # ESCAPEボタンのクリック判定（elifをここに入れる）
             elif pyxel.width-6 <= pyxel.mouse_x <= pyxel.width and 2 <= pyxel.mouse_y <= 10:
@@ -51,18 +55,19 @@ def update_start_scene(self):
             self.current_scene = self.PLAY_SCENE
 
 def update_play_scene(self):
-    if self.game_finish:
-        if pyxel.btnp(pyxel.KEY_SPACE):
-            self.current_scene = self.MENU_SCENE
-        return 
-    
     if pyxel.btnp(pyxel.MOUSE_BUTTON_LEFT):
         # MENUボタンがクリックされた場合
-        if 4 <= pyxel.mouse_x <= 13 and 13 <= pyxel.mouse_y <= 21: 
+        if 4 <= pyxel.mouse_x <= 13 and 4 <= pyxel.mouse_y <= 13: 
             self.current_scene = self.MENU_SCENE
         # ESCAPEボタンがクリックされた場合
         elif pyxel.width-6 <= pyxel.mouse_x <= pyxel.width and 2 <= pyxel.mouse_y <= 10:
             pyxel.quit()
+            
+    if self.game_finish:
+        if pyxel.btnp(pyxel.KEY_SPACE):
+            self.current_scene = self.MENU_SCENE
+        return 
+
 
     # まだゲーム中ならタイマーを減らす
     self.game_timer -= 1
@@ -83,7 +88,7 @@ def update_play_scene(self):
 # draw
 def draw_menu_scene(self):
     pyxel.cls(pyxel.COLOR_DARK_BLUE)
-    pyxel.blt(4,13,0,56,2,8,7,pyxel.COLOR_BLACK) #MENUのアイコン
+    pyxel.blt(1,2,0,56,2,8,7,pyxel.COLOR_BLACK) #MENUのアイコン
     pyxel.blt(pyxel.width-6,2,0,48,0,5,8,pyxel.COLOR_BLACK) #ESCAPEのアイコン
     pyxel.text(pyxel.width//10, pyxel.height//10, "CLICK TO START", pyxel.COLOR_WHITE)
     pyxel.text(pyxel.width//3+10, pyxel.height//10 + 40, "EASY", pyxel.COLOR_YELLOW)
@@ -94,20 +99,20 @@ def draw_start_scene(self):
     pyxel.cls(pyxel.COLOR_BLACK) 
     mode_text = f"MODE: {self.game_level.upper()}"
     pyxel.text(pyxel.width//10, pyxel.height//10, mode_text, pyxel.COLOR_YELLOW)
-    pyxel.blt(4,13,0,56,2,8,7,pyxel.COLOR_BLACK) #MENUのアイコン
+    pyxel.blt(1,2,0,56,2,8,7,pyxel.COLOR_BLACK) #MENUのアイコン
     pyxel.blt(pyxel.width-6,2,0,48,0,5,8,pyxel.COLOR_BLACK) #ESCAPEのアイコン
     pyxel.text(pyxel.width//10, pyxel.height//10 + 20, "SPACE TO START", pyxel.COLOR_WHITE)
 
 
 def draw_play_scene(self):
     pyxel.cls(pyxel.COLOR_BLACK)
-    pyxel.blt(4,13,0,56,2,8,7,pyxel.COLOR_WHITE) #MENUのアイコン
+    pyxel.blt(1,2,0,56,2,8,7,pyxel.COLOR_WHITE) #MENUのアイコン
     pyxel.blt(pyxel.width-6,2,0,48,0,5,8,pyxel.COLOR_BLACK) #ESCAPEのアイコン
     if self.game_finish:
         # FINISH画面の描画
-        pyxel.text(pyxel.width//2 - 15, pyxel.height//2 - 10, "FINISH!", pyxel.COLOR_RED)
-        pyxel.text(pyxel.width//2 - 25, pyxel.height//2 + 10, f"SCORE: {self.score}", pyxel.COLOR_YELLOW)
-        pyxel.text(pyxel.width//2 - 40, pyxel.height//2 + 30, "PRESS SPACE TO MENU", pyxel.COLOR_WHITE)
+        pyxel.text(pyxel.width//2 - 15, pyxel.height//2 - 20, "FINISH!", pyxel.COLOR_RED)
+        pyxel.text(pyxel.width//2 - 18, pyxel.height//2 , f"SCORE: {self.score}", pyxel.COLOR_YELLOW)
+        pyxel.text(pyxel.width//2 - 40, pyxel.height//2 + 10, "PRESS SPACE TO MENU", pyxel.COLOR_WHITE)
 
     else:
         pyxel.text(5, 5, f"TIME: {self.game_timer // 30}", pyxel.COLOR_WHITE)
@@ -115,4 +120,4 @@ def draw_play_scene(self):
         pyxel.text(pyxel.width - 50, pyxel.height//10, f"SCORE: {self.score}", pyxel.COLOR_GREEN)
         self.word_manager.draw()
         input_text = f"INPUT: {self.keyboard.keyword}"
-        pyxel.text(pyxel.width//10, pyxel.height//2, input_text, pyxel.COLOR_YELLOW)
+        pyxel.text(4, pyxel.height//2, input_text, pyxel.COLOR_YELLOW)

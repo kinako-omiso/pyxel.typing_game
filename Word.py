@@ -35,11 +35,12 @@ class Key_word:
                 return word
             else:
                 word = self.fake.text(max_nb_chars=30).lower()
-                return word
+                if len(word) <100:
+                    return word
 
     def generate_new_word(self, game_level):
         self.keyword = self.get_target_word(game_level)
 
     
     def draw(self):
-        pyxel.text(pyxel.width//5, pyxel.height//2-20,self.keyword,pyxel.COLOR_WHITE)
+        pyxel.text(pyxel.width//4, pyxel.height//2-20,self.keyword,pyxel.COLOR_WHITE)
