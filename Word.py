@@ -1,4 +1,3 @@
-
 import pyxel #type:ignore
 from faker import Faker #type:ignore
 
